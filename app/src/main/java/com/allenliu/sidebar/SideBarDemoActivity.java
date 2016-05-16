@@ -14,7 +14,7 @@ public class SideBarDemoActivity extends AppCompatActivity {
         bar.setOnStrSelectCallBack(new ISideBarSelectCallBack() {
             @Override
             public void onSelectStr(int index, String selectStr) {
-                Toast.makeText(SideBarDemoActivity.this,selectStr,Toast.LENGTH_SHORT).show();
+          //      Toast.makeText(SideBarDemoActivity.this,selectStr,Toast.LENGTH_SHORT).show();
             }
         });
     }

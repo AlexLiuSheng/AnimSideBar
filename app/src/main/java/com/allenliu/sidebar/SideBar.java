@@ -67,6 +67,10 @@ public class SideBar extends TextView {
         super(context, attrs, defStyleAttr, defStyleRes);
         init(attrs);
     }
+    public void setDataResource(String[] data){
+        letters=data;
+        invalidate();
+    }
    public void setOnStrSelectCallBack(ISideBarSelectCallBack callBack){
        this.callBack=callBack;
    }
@@ -117,15 +121,25 @@ public class SideBar extends TextView {
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-
             case MotionEvent.ACTION_MOVE:
-                eventY = event.getY();
-                invalidate();
-                return true;
-            case MotionEvent.ACTION_UP:
+                if(event.getX()>(w-getPaddingRight()-singleTextH-10)) {
+                    eventY = event.getY();
+                    invalidate();
+                    return true;
+                }else{
+                    break;
+                }
+            case MotionEvent.ACTION_CANCEL:
                 eventY = 0;
                 invalidate();
                 return true;
+            case MotionEvent.ACTION_UP:
+                if(event.getX()>(w-getPaddingRight()-singleTextH-10)) {
+                    eventY = 0;
+                    invalidate();
+                    return true;
+                }else
+                    break;
         }
         return super.onTouchEvent(event);
     }
