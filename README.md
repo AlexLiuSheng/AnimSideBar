@@ -3,7 +3,7 @@ A SiderBar base on Android that has a beautiful anim
 
 gif show:![image](https://cloud.githubusercontent.com/assets/12408339/15278798/0df854a2-1b50-11e6-962e-15cb94ecc113.gif ) 
 
-to use,you should write like this on your layout  
+to use,you should write like this in your layout  
 
      <com.allenliu.sidebar.SideBar
     android:layout_alignParentRight="true"
