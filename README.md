@@ -10,7 +10,7 @@ to use,you should write like this in your layout
     android:textColor="@color/colorAccent"
     android:textSize="15sp"
     android:paddingRight="10dp"
-    sidebar:scaleTime="5"
+    sidebar:scaleTime="1"
     android:layout_width="200dp"
     android:id="@+id/bar"
     android:layout_height="match_parent" />
