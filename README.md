@@ -1,5 +1,5 @@
 # AnimSideBar
-A SiderBar base on Android that has a beautiful anim
+A SiderBar base on Android that has a wave anim
 
 gif show:![image](https://cloud.githubusercontent.com/assets/12408339/15278798/0df854a2-1b50-11e6-962e-15cb94ecc113.gif ) 
 
@@ -10,7 +10,7 @@ to use,you should write like this in your layout
     android:textColor="@color/colorAccent"
     android:textSize="15sp"
     android:paddingRight="10dp"
-    siderbar:scaleTime="5"
+    sidebar:scaleTime="5"
     android:layout_width="200dp"
     android:id="@+id/bar"
     android:layout_height="match_parent" />
