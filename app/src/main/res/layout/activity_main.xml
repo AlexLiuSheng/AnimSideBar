@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:sidebar="http://schemas.android.com/apk/res-auto"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".SideBarDemoActivity">
@@ -11,6 +12,7 @@
     android:textColor="@color/colorAccent"
     android:textSize="15sp"
     android:paddingRight="10dp"
+    sidebar:scaleTime="5"
     android:layout_width="200dp"
     android:id="@+id/bar"
     android:layout_height="match_parent" />

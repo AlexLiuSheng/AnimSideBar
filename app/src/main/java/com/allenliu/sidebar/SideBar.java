@@ -127,6 +127,8 @@ public class SideBar extends TextView {
                     invalidate();
                     return true;
                 }else{
+                    eventY = 0;
+                    invalidate();
                     break;
                 }
             case MotionEvent.ACTION_CANCEL:
