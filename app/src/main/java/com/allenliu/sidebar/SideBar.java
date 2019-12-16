@@ -12,40 +12,43 @@ import android.view.MotionEvent;
 import android.widget.TextView;
 
 /**
- * Created by Allen Liu on 2016/5/12.
+ * Created by Allen Liu on 2019/12/12.
  */
-public class SideBar extends TextView {
+public class SideBar extends android.support.v7.widget.AppCompatTextView {
     private String[] letters = new String[]{"A", "B", "C", "D", "E", "F", "G", "H", "I",
             "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V",
             "W", "X", "Y", "Z", "#"};
     private Paint textPaint;
     private Paint bigTextPaint;
-    private Paint scaleTextPaint;
-    private Canvas canvas;
-    private int itemH;
-    private int w;
-    private int h;
-    /**
-     * 普通情况下字体大小
-     */
-    float singleTextH;
-    /**
-     * 缩放离原始的宽度
-     */
-    private float scaleWidth = dp(100);
-    /**
-     * 滑动的Y
-     */
-    private float eventY = 0;
-    /**
-     * 缩放的倍数
-     */
-    private int scaleTime = 1;
-    /**
-     * 缩放个数item，即开口大小
-     */
-    private int scaleItemCount = 6;
+
     private ISideBarSelectCallBack callBack;
+    private float eventY;
+    private float w;
+    private float sideTextWidth;
+    /**
+     * 是否重新测量宽高
+     */
+    private boolean isTouching = false;
+    private float itemH;
+
+    /**
+     * 振幅
+     */
+    private float A = dp(100);
+    /**
+     * 波峰与bigText之间的距离
+     */
+    private int gapBetweenText = dp(50);
+
+    /**
+     * 开口数量
+     */
+    private int openCount = 13;
+    /**
+     * 字体缩放，基于textSize
+     */
+    private float fontScale = 1;
+    private float bigTextSize;
 
     public SideBar(Context context) {
         super(context);
@@ -62,167 +65,192 @@ public class SideBar extends TextView {
         init(attrs);
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public SideBar(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-        init(attrs);
-    }
-    public void setDataResource(String[] data){
-        letters=data;
-        invalidate();
-    }
-   public void setOnStrSelectCallBack(ISideBarSelectCallBack callBack){
-       this.callBack=callBack;
-   }
     /**
-     * 设置字体缩放比例
-     * @param scale
+     * set MaxFontScale
+     *
+     * @param fontScale
+     * @return
      */
-    public void setScaleTime(int scale){
-        scaleTime=scale;
+    public SideBar setFontScale(float fontScale) {
+        this.fontScale = fontScale;
+        return this;
+    }
+
+    public void setDataResource(String[] data) {
+        letters = data;
         invalidate();
     }
 
-    /**
-     * 设置缩放字体的个数，即开口大小
-     * @param scaleItemCount
-     */
-    public  void setScaleItemCount(int scaleItemCount){
-        this.scaleItemCount=scaleItemCount;
-        invalidate();
+    public void setOnStrSelectCallBack(ISideBarSelectCallBack callBack) {
+        this.callBack = callBack;
+    }
+
+    public SideBar setBigTextSize(float bigTextSize) {
+        this.bigTextSize = bigTextSize;
+        bigTextPaint.setTextSize(bigTextSize);
+//        invalidate();
+        return this;
+    }
+
+    public SideBar setA(float a) {
+        A = a;
+//        invalidate();
+        return this;
+    }
+
+    public SideBar setGapBetweenText(int gapBetweenText) {
+        this.gapBetweenText = gapBetweenText;
+//        invalidate();
+        return this;
+    }
+
+    public SideBar setOpenCount(int openCount) {
+        this.openCount = openCount;
+//        invalidate();
+        return this;
+    }
+
+    private void caculateAW(int height) {
+        itemH = height * 1.0f / letters.length;
+        /**
+         * 开口宽度
+         */
+        float opendWidth = itemH * openCount;
+        //角速度 2PI/t 周期
+        w = (float) (Math.PI * 2.0f / (opendWidth * 2));
+    }
+
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        int mode = MeasureSpec.getMode(widthMeasureSpec);
+        int viewWidth = MeasureSpec.getSize(widthMeasureSpec);
+        caculateAW(MeasureSpec.getSize(heightMeasureSpec));
+        if (mode == MeasureSpec.UNSPECIFIED || mode == MeasureSpec.AT_MOST) {
+            viewWidth = !isTouching ? (int) (sideTextWidth + getPaddingLeft() + getPaddingRight()) : (int) (A + gapBetweenText + getBigTextWidth() + getPaddingLeft() + getPaddingRight());
+        }
+//        CLog.e("width:" + viewWidth + "height:" + MeasureSpec.getSize(heightMeasureSpec));
+        setMeasuredDimension(viewWidth, MeasureSpec.getSize(heightMeasureSpec));
     }
 
     private void init(AttributeSet attrs) {
-      //  setPadding(dp(10), 0, dp(10), 0);
-        if(attrs!=null) {
+        //  setPadding(dp(10), 0, dp(10), 0);
+        if (attrs != null) {
             TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.SideBar);
-           scaleTime= typedArray.getInteger(R.styleable.SideBar_scaleTime,1);
-            scaleItemCount=typedArray.getInteger(R.styleable.SideBar_scaleItemCount,6);
+            A = typedArray.getInteger(R.styleable.SideBar_A, dp(100));
+            fontScale = typedArray.getFloat(R.styleable.SideBar_fontScale, 1);
+            bigTextSize = typedArray.getFloat(R.styleable.SideBar_bigTextSize, getTextSize() * 3);
+            gapBetweenText = typedArray.getInteger(R.styleable.SideBar_gapBetweenText, dp(50));
+            openCount = typedArray.getInteger(R.styleable.SideBar_openCount, 13);
+        } else {
+            bigTextSize = getTextSize() * 3;
         }
         textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         textPaint.setColor(getCurrentTextColor());
         textPaint.setTextSize(getTextSize());
         textPaint.setTextAlign(Paint.Align.CENTER);
+
         bigTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         bigTextPaint.setColor(getCurrentTextColor());
-        bigTextPaint.setTextSize(getTextSize()+getTextSize() * (scaleTime+2) );
+        bigTextPaint.setTextSize(bigTextSize);
         bigTextPaint.setTextAlign(Paint.Align.CENTER);
-        scaleTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        scaleTextPaint.setColor(getCurrentTextColor());
-        scaleTextPaint.setTextSize(getTextSize() * (scaleTime + 1));
-        scaleTextPaint.setTextAlign(Paint.Align.CENTER);
+
+
+        float sideTextHeight = textPaint.getFontMetrics().descent - textPaint.getFontMetrics().ascent;
+        sideTextWidth = textPaint.measureText("W");
     }
 
-    private int dp(int px) {
-        return DensityUtil.dip2px(getContext(), px);
+
+    private int dp(int v) {
+        final float scale = getContext().getResources().getDisplayMetrics().density;
+        return (int) (v * scale + 0.5f);
     }
+
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        int startTouchX = (int) (getMeasuredWidth() - A);
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
             case MotionEvent.ACTION_MOVE:
-                if(event.getX()>(w-getPaddingRight()-singleTextH-10)) {
+                if (event.getX() > startTouchX) {
                     eventY = event.getY();
-                    invalidate();
-                    return true;
-                }else{
-                    eventY = 0;
-                    invalidate();
-                    break;
+                    if (!isTouching) {
+                        isTouching = true;
+                        requestLayout();
+                    } else {
+                        invalidate();
+                    }
+
+                } else {
+                    if (isTouching) {
+                        resetDefault();
+                    }
                 }
-            case MotionEvent.ACTION_CANCEL:
-                eventY = 0;
-                invalidate();
                 return true;
+            case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_UP:
-                if(event.getX()>(w-getPaddingRight()-singleTextH-10)) {
-                    eventY = 0;
-                    invalidate();
-                    return true;
-                }else
-                    break;
+                resetDefault();
+                return true;
+
         }
         return super.onTouchEvent(event);
+    }
+
+    private void resetDefault() {
+        isTouching = false;
+        eventY = 0;
+        requestLayout();
     }
 
 
     @Override
     protected void onDraw(Canvas canvas) {
-        this.canvas = canvas;
-        DrawView(eventY);
-    }
+        int singleSideCount = openCount / 2;
+        int index = isTouching && eventY >= 0 && eventY <= getMeasuredHeight() ? (int) Math.floor((eventY / itemH)) : -(singleSideCount + 1);
+//        index=Math.min(letters.length,index);
+//        CLog.e("index:" + index + "eventY:" + eventY);
+        float sideX = sideTextWidth / 2 + getPaddingRight();
+        for (int i = 0; i < letters.length; i++) {
+            //rest textsize
+            textPaint.setTextSize(getTextSize());
+            int y = (int) (itemH * (i + 1));
+            int x;
+            if (Math.abs(i - index) > singleSideCount) {
+                x = (int) (getMeasuredWidth() - sideX);
+            } else {
+                float percent = eventY / itemH;
+                int t = (int) (i * itemH - eventY);
+                double v = A * Math.sin(w * t + Math.PI / 2);
 
-    private void DrawView(float y) {
-        int currentSelectIndex = -1;
-        if (y != 0) {
-            for (int i = 0; i < letters.length; i++) {
-                float currentItemY = itemH * i;
-                float nextItemY = itemH * (i + 1);
-                if (y >= currentItemY && y < nextItemY) {
-                    currentSelectIndex = i;
-                    if(callBack!=null){
-                        callBack.onSelectStr(currentSelectIndex,letters[i]);
-                    }
-                    //画大的字母
-                    Paint.FontMetrics fontMetrics = bigTextPaint.getFontMetrics();
-                    float bigTextSize = fontMetrics.descent - fontMetrics.ascent;
-                    canvas.drawText(letters[i], w - getPaddingRight() - scaleWidth - bigTextSize, singleTextH + itemH * i, bigTextPaint);
+//                //如果算出来小于字体宽度 就取字体宽度
+                v = Math.max(v, sideX);
+                x = (int) (getMeasuredWidth() - v);
+                //根据delta缩放字体
+                if (v == sideX) {
+                    textPaint.setTextSize(getTextSize());
+                } else {
+                    float delta = (Math.abs((i - percent)) / singleSideCount);
+                    float textSize = getTextSize() + (1 - delta) * getTextSize() * fontScale;
+//                    textSize=Math.max(textSize,getTextSize());
+                    textPaint.setTextSize(textSize);
                 }
+
+            }
+            canvas.drawText(letters[i], x, y, textPaint);
+
+        }
+        if (index != -(singleSideCount + 1)) {
+            canvas.drawText(letters[index], getPaddingLeft() + getBigTextWidth() / 2, (int) (itemH * (index + 1)), bigTextPaint);
+            if (callBack != null) {
+                callBack.onSelectStr(index, letters[index]);
+
             }
         }
-        drawLetters(y, currentSelectIndex);
+
     }
 
-    private void drawLetters(float y, int index) {
-        //第一次进来没有缩放情况，默认画原图
-        if (index == -1) {
-            w = getMeasuredWidth();
-            h = getMeasuredHeight();
-            itemH = h / letters.length;
-            Paint.FontMetrics fontMetrics = textPaint.getFontMetrics();
-            singleTextH = fontMetrics.descent - fontMetrics.ascent;
-            for (int i = 0; i < letters.length; i++) {
-                canvas.drawText(letters[i], w - getPaddingRight(), singleTextH + itemH * i, textPaint);
-            }
-            //触摸的时候画缩放图
-        } else {
-            //遍历所有字母
-            for (int i = 0; i < letters.length; i++) {
-                //要画的字母的起始Y坐标
-                float currentItemToDrawY = singleTextH + itemH * i;
-                float centerItemToDrawY;
-                if (index < i)
-                    centerItemToDrawY = singleTextH + itemH * (index + scaleItemCount);
-                else
-                    centerItemToDrawY = singleTextH + itemH * (index - scaleItemCount);
-                float delta = 1 - Math.abs((y - currentItemToDrawY) / (centerItemToDrawY - currentItemToDrawY));
-                Log.v("delta", letters[i] + "--->" + delta + "");
-                float maxRightX = w - getPaddingRight();
-                //如果大于0，表明在y坐标上方
-                scaleTextPaint.setTextSize(getTextSize() + getTextSize() * delta);
-                float drawX = maxRightX - scaleWidth * delta;
-                //超出边界直接花在边界上
-                if (drawX > maxRightX)
-                    canvas.drawText(letters[i], maxRightX, singleTextH + itemH * i, textPaint);
-                else
-                    canvas.drawText(letters[i], drawX, singleTextH + itemH * i, scaleTextPaint);
-
-//抛物线实现，没有动画效果，太生硬了
-//                    canvas.save();
-//                    canvas.translate(w-getPaddingRight(),0);
-//                    double y1 = singleTextH + itemH * (index - scaleItemCount);
-//                    double y2 = singleTextH + itemH * (index + scaleItemCount);
-//                    double topY = y;
-//                    double topX = -scaleWidth;
-//                    double p = topX / ((topY - y1) * (topY - y2));
-//                    for (int j = 1; j <= scaleItemCount; j++) {
-//                        double currentY=singleTextH + itemH * i;
-//                        canvas.drawText(letters[i], (float) (p * (currentY - y1) * (currentY - y2)), singleTextH + itemH * i, scaleTextPaint);
-//                    }
-//                    canvas.restore();
-                //     }
-            }
-        }
+    private float getBigTextWidth() {
+        return bigTextPaint.measureText("W");
     }
 }

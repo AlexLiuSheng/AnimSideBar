@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="SideBar">
+        <attr name="fontScale" format="float" />
+        <attr name="bigTextSize" format="float" />
+        <attr name="openCount" format="integer" />
+        <attr name="A" format="integer" />
+        <attr name="gapBetweenText" format="integer" />
+
+    </declare-styleable>
+</resources>
