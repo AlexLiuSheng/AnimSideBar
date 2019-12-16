@@ -6,14 +6,15 @@ implementation this widget in a new way.
 <img style="width:300px;" src="https://github.com/AlexLiuSheng/AnimSideBar/blob/master/ui/ui2.gif"/><img style="width:300px;" src="https://github.com/AlexLiuSheng/AnimSideBar/blob/master/ui/ui1.gif"/>
 
 ## use
-include:
+### include:
 ```
 	dependencies {
 	        implementation 'com.github.AlexLiuSheng:animsidebar:1.0.0'
 	}
 ```
-alternatively,you can use it just copy the code in your project.
+alternatively,you can include it just copy the code into your project.
 
+### use
 to use,you should write like this in your layout  
 ```
   <com.allenliu.sidebar.SideBar
