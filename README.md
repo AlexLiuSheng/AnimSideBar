@@ -1,7 +1,11 @@
 # AnimSideBar
 A SiderBar base on Android that has a wave anim
+# update in 19/12/16
+implementation this widget in a new way.
+## effect
+<img style="width:300px;" src="https://github.com/AlexLiuSheng/AnimSideBar/blob/master/ui/ui2.gif"/><img style="width:300px;" src="https://github.com/AlexLiuSheng/AnimSideBar/blob/master/ui/ui1.gif"/>
 
-gif show:![image](https://cloud.githubusercontent.com/assets/12408339/15278798/0df854a2-1b50-11e6-962e-15cb94ecc113.gif ) 
+## use
 
 to use,you should write like this in your layout  
 
