@@ -9,7 +9,7 @@ implementation this widget in a new way.
 ### include:
 ```
 	dependencies {
-	        implementation 'com.github.AlexLiuSheng:animsidebar:1.0.0'
+	       implementation 'com.github.AlexLiuSheng:AnimSideBar:1.0.0'
 	}
 ```
 alternatively,you can include it just copy the code into your project.
