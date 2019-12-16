@@ -1,8 +1,11 @@
-package com.allenliu.sidebar;
+package com.allenliu.sidebardemo;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.widget.Toast;
+
+import com.allenliu.sidebar.ISideBarSelectCallBack;
+import com.allenliu.sidebar.SideBar;
+
 
 public class SideBarDemoActivity extends AppCompatActivity {
  private SideBar bar;

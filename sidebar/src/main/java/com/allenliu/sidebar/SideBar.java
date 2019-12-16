@@ -1,15 +1,11 @@
 package com.allenliu.sidebar;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.os.Build;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
-import android.widget.TextView;
 
 /**
  * Created by Allen Liu on 2019/12/12.

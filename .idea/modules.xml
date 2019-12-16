@@ -6,6 +6,7 @@
       <module fileurl="file://$PROJECT_DIR$/app/AnimSideBar-app.iml" filepath="$PROJECT_DIR$/app/AnimSideBar-app.iml" />
       <module fileurl="file://$PROJECT_DIR$/SideBar.iml" filepath="$PROJECT_DIR$/SideBar.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sidebar/sidebar.iml" filepath="$PROJECT_DIR$/sidebar/sidebar.iml" />
     </modules>
   </component>
 </project>
