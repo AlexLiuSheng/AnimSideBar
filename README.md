@@ -6,9 +6,16 @@ implementation this widget in a new way.
 <img style="width:300px;" src="https://github.com/AlexLiuSheng/AnimSideBar/blob/master/ui/ui2.gif"/><img style="width:300px;" src="https://github.com/AlexLiuSheng/AnimSideBar/blob/master/ui/ui1.gif"/>
 
 ## use
+include:
+```
+	dependencies {
+	        implementation 'com.github.AlexLiuSheng:animsidebar:1.0.0'
+	}
+```
+alternatively,you can use it just copy the code in your project.
 
 to use,you should write like this in your layout  
-
+```
   <com.allenliu.sidebar.SideBar
     android:layout_alignParentRight="true"
     android:textColor="@color/colorAccent"
@@ -17,6 +24,7 @@ to use,you should write like this in your layout
     android:layout_width="wrap_content"
     android:id="@+id/bar"
     android:layout_height="match_parent" />
+ ```
 
 after this ,you can add a setOnStrSelectCallBack,like this
 
